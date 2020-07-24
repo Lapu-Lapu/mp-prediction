@@ -12,11 +12,11 @@ all: fig3 fig4 fig5 fig6
 .PHONY: data
 data: onlinedata vrdata
 
-onlinedata: data/processed/processed_data_vr.json
+vrdata: data/processed/processed_data_vr.json
 
-vrdata: data/processed/processed_data_online.json
+onlinedata: data/processed/processed_data_online.json
 
-data/processed/processed_data_vr.json:
+data/processed/processed_data_vr.json data/processed/catrchtrial_vr.csv:
 	python src/data/process_vr_data.py
 
 data/processed/catchtrial_online.json data/processed/processed_data_online.json:
@@ -43,7 +43,8 @@ reports/figures/fig3.pdf: data/processed/processed_data_online.json\
 	data/processed/processed_data_vr.json
 	python src/visualization/make_fig3.py
 
-reports/figures/fig4.pdf: data/processed/catchtrial_online.json
+reports/figures/fig4.pdf: data/processed/catchtrial_online.json\
+	data/processed/catrchtrial_vr.csv
 	python src/visualization/make_fig4.py
 
 ## Delete all compiled Python files

@@ -31,13 +31,11 @@ remap_std_modelname = {
 
 
 def load_data(dirname) -> pd.DataFrame:
-    fn = 'results_dataframe.pkl'
     fp = os.path.join(dirname, fn)
     files = [dirname + f for f in os.listdir(dirname) if f[-3:] == 'csv']
     df = load_csv(files[0])
     for i in range(1, len(files)):
         df = df.append(load_csv(files[i]), ignore_index=True)
-    pd.to_pickle(df, fp)
     return df
 
 
@@ -151,7 +149,7 @@ def load_post_processed_data(rootdir='../VR_data/') -> pd.DataFrame:
     df_catch_1 = df[df['first_seq'].isin(['400ms', '700ms', '1000ms'])]
     df_catch_2 = df[df['second_seq'].isin(['400ms', '700ms', '1000ms'])]
     df_catch = pd.concat(pd.DataFrame(i) for i in (df_catch_1, df_catch_2))
-    df_catch.to_csv('catchtrials.csv')
+    df_catch.to_csv('data/processed/catchtrial_vr.csv')
 
     # now remove catchtrials from df
 

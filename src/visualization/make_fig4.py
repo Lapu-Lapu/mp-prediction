@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from src.globs import beta_std
 
-df = pd.read_csv('data/raw/vr/catchtrials/catchtrials.csv')
+# df = pd.read_csv('data/raw/vr/catchtrials/catchtrials.csv')
+df = pd.read_csv('data/processed/catchtrial_vr.csv')
 df['shift'] = df.apply(lambda row: row.first_seq
                        if 'ms' in row.first_seq else row.second_seq,
                        axis=1)

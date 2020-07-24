@@ -1,10 +1,8 @@
-# from vr_logistic_regression import open_pkls, add_model_scores, mp_movement_id
 from src.data.utils import (open_pkls,
                             load_post_processed_data, get_mptype,
                             process_data_dict, get_params, trial_id,
                             parse_filename)
 from src.globs import beta_std
-# from data_cleanup import load_post_processed_data, get_mptype, get_params, process_data_dict, trial_id
 
 import pandas as pd
 import numpy as np
