@@ -1,15 +1,18 @@
 Evaluating Perceptual Predictions based on Movement Primitive Models in VR- and Online-Experiments
 ==============================
 
+[![DOI](https://zenodo.org/badge/282155822.svg)](https://zenodo.org/badge/latestdoi/282155822)
+
 Dataset and analysis software associated with the following publication:
 
 [1] Benjamin Knopp, Dmytro Velychko, Johannes Dreibrodt, Alexander C.  Schütz, and Dominik Endres. 2020. Evaluating Perceptual Predictions based on Movement Primitive Models in VR- and Online-Experiments .  In ACM Symposium on Applied Perception 2020 (SAP ’20), September 12– 13, 2020, Virtual Event, USA. ACM, New York, NY, USA, 9 pages. https://doi.org/10.1145/3385955.3407940
 
+Please use github to access all data!
 
 ## Requirements:
 - Python distribution [`Anaconda or Miniconda`](https://docs.conda.io/en/latest/miniconda.html)
 - `Unix-like OS` (tested on Ubuntu 16.04, Arch Linux, OpenSUSE)
-- (optional) [`git lfs`](https://github.com/git-lfs/git-lfs/wiki/Installation) if you want to clone this repo from github
+- [`git lfs`](https://github.com/git-lfs/git-lfs/wiki/Installation) to download large files
 
 ## Instructions
 
