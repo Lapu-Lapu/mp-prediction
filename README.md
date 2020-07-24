@@ -12,8 +12,9 @@ through intermediate results into plots shown in the publication. The preprocess
 slightly different, therefore the results will differ in an insignificantly.
 
 ## Requirements:
-- Python distribution Anaconda or Miniconda
-- Unix-like OS (tested on Ubuntu 16.04, Arch Linux, OpenSUSE)
+- Python distribution `Anaconda or Miniconda`
+- `Unix-like OS` (tested on Ubuntu 16.04, Arch Linux, OpenSUSE)
+- (optional) `git lfs` if you want to clone this repo from github
 
 ## Instructions
 
