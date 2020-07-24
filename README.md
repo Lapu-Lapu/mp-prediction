@@ -3,7 +3,7 @@ Evaluating Perceptual Predictions based on Movement Primitive Models in VR- and 
 
 Dataset and analysis software associated with the following publication:
 
-[1] Benjamin Knopp, Dmytro Velychko, Johannes Dreibrodt, Alexander C.  Schütz, and Dominik Endres. 2020. Evaluating Perceptual Predictions based on Movement Primitive Models in VR- and Online-Experiments .  In ACM Symposium on Applied Perception 2020 (SAP ’20), September 12– 13, 2020, Virtual Event, USA. ACM, New York, NY, USA, 9 pages. https: //doi.org/10.1145/3385955.3407940
+[1] Benjamin Knopp, Dmytro Velychko, Johannes Dreibrodt, Alexander C.  Schütz, and Dominik Endres. 2020. Evaluating Perceptual Predictions based on Movement Primitive Models in VR- and Online-Experiments .  In ACM Symposium on Applied Perception 2020 (SAP ’20), September 12– 13, 2020, Virtual Event, USA. ACM, New York, NY, USA, 9 pages. https://doi.org/10.1145/3385955.3407940
 
 
 ## Requirements:
