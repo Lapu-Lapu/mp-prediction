@@ -31,7 +31,6 @@ remap_std_modelname = {
 
 
 def load_data(dirname) -> pd.DataFrame:
-    fp = os.path.join(dirname, fn)
     files = [dirname + f for f in os.listdir(dirname) if f[-3:] == 'csv']
     df = load_csv(files[0])
     for i in range(1, len(files)):
