@@ -7,9 +7,9 @@ Dataset and analysis software associated with the following publication:
 
 
 ## Requirements:
-- Python distribution `Anaconda or Miniconda`
+- Python distribution [`Anaconda or Miniconda`](https://docs.conda.io/en/latest/miniconda.html)
 - `Unix-like OS` (tested on Ubuntu 16.04, Arch Linux, OpenSUSE)
-- (optional) `git lfs` if you want to clone this repo from github
+- (optional) [`git lfs`](https://github.com/git-lfs/git-lfs/wiki/Installation) if you want to clone this repo from github
 
 ## Instructions
 
