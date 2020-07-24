@@ -19,9 +19,9 @@ slightly different, therefore the results will differ in an insignificantly.
 
 1. Make sure to replicate the python environment using conda:
 
-    `conda env create -f environment.lock.yaml --force`
-    `conda activate mp_prediction`
-    `pip install -e .`
+    - `conda env create -f environment.lock.yaml --force`
+    - `conda activate mp_prediction`
+    - `pip install -e .`
 
 2. Run `make all`. This will take a few minutes to save all figures
    presented in [1] in folder `reports/figures`. You can also run processing
