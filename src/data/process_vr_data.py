@@ -1,7 +1,7 @@
 from src.data.utils import (open_pkls,
                             load_post_processed_data, get_mptype,
                             process_data_dict, get_params, trial_id,
-                            parse_filename)
+                            parse_filename, _parse_params)
 from src.globs import beta_std
 
 import pandas as pd
@@ -108,5 +108,30 @@ df = df.drop([
     'trialnumber'
 ],
              axis=1)
+
+# Add continuation only MSE
+participant_id = df.participant.unique()
+id_to_idx = dict(zip(participant_id, range(len(participant_id))))
+df['pid'] = df.participant.apply(lambda id: id_to_idx[id])
+
+D2 = open_pkls('data/raw/online/scores/combined_errors.pkl')
+D2 = process_data_dict(D2)
+D2 = D2.set_index('training_id')
+
+U = set(df.trial_id).intersection(D2.index)
+df = df[df['trial_id'].apply(lambda x: x in U)]
+
+for idx in df.index:
+    trial_id = df.loc[idx, 'trial_id']
+    val = D2.loc[trial_id, "continuation_T"] * 60 / D2.loc[trial_id,
+                                                           "continuation_MSE"]
+    df.loc[idx, 'invMSE'] = val
+    df.loc[idx, 'partialMSE'] = 1 / val
+
+df['X'] = (df.partialMSE - df.partialMSE.mean()) / (df.partialMSE.max() -
+                                                    df.partialMSE.mean())
+
+df['model'] = df.apply(_parse_params, axis=1)
+
 
 df.to_json('data/processed/processed_data_vr.json')

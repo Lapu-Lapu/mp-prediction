@@ -13,7 +13,7 @@ for i, (touch, d) in enumerate(df.groupby('occluded_contact')):
     with pm.Model() as logistic_model:
         a = pm.Normal('a', 0, 10)
         b = pm.Normal('b', 0, 10)
-        x = d['partial_mse'] - d['partial_mse'].mean()
+        x = d['partialMSE'] - d['partialMSE'].mean()
         x = x / x.max()
         p = 1 / (1 + np.exp(-(a + b * x)))
         s = pm.Bernoulli('s', p=p, observed=d['result'])

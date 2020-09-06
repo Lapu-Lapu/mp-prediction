@@ -93,7 +93,7 @@ def add_partial_mse(row):
         partial_mse = SCORES[fn][occ]
     except KeyError:
         partial_mse = None
-    row['partial_mse'] = partial_mse
+    row['partialMSE'] = partial_mse
     return row
 
 
@@ -204,7 +204,7 @@ if __name__ == '__main__':
     # split catchtrials into separate dataframe
     catchtrials = df[df.mp_type == 'catchtrial']
     df = df[df.mp_type != 'catchtrial']
-    for i in np.where(np.isnan(df.partial_mse))[0]:
+    for i in np.where(np.isnan(df.partialMSE))[0]:
         pass  # TODO: find error data file for 5,5 vgpdm pass-bottle-hold!
         # pprint(df.iloc[i])
     df = df[~df.trial_id.apply(lambda x: 'vgpdm_dyn5lvm5_pass-bottle-hold' in x
@@ -212,8 +212,8 @@ if __name__ == '__main__':
 
     # add useful columns for non-catchtrial data
     df['model'] = df.apply(_parse_params, axis=1)
-    df['X'] = (df.partial_mse - df.partial_mse.mean()) / (
-        df.partial_mse.max() - df.partial_mse.mean())
+    df['X'] = (df.partialMSE - df.partialMSE.mean()) / (
+        df.partialMSE.max() - df.partialMSE.mean())
     df['direction'] = df.movement.apply(
         lambda x: 'from_left'
         if x in ['pass-bottle', 'pass-bottle-hold'] else 'from_right')

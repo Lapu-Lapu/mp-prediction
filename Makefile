@@ -16,7 +16,10 @@ vrdata: data/processed/processed_data_vr.json
 
 onlinedata: data/processed/processed_data_online.json
 
-data/processed/processed_data_vr.json data/processed/catrchtrial_vr.csv:
+data/processed/logreg_traces.pkl:
+	python src/models/log-reg.py
+
+data/processed/processed_data_vr.json data/processed/catrchtrial_vr.csv: src/data/process_vr_data.py
 	python src/data/process_vr_data.py
 
 data/processed/catchtrial_online.json data/processed/processed_data_online.json:
@@ -29,6 +32,13 @@ fig4: reports/figures/fig4.pdf
 fig5: reports/figures/fig5a.pdf reports/figures/fig5b.pdf
 
 fig6: reports/figures/fig6.pdf
+
+talk_main_fig: reports/figure/talk_main_fig.pdf
+
+reports/figure/talk_main_fig.pdf: data/processed/processed_data_online.json\
+	data/processed/processed_data_vr.json\
+	data/processed/logreg_traces.pkl
+	python src/visualization/make_talk_results_figure.py
 
 reports/figures/fig6.pdf: data/processed/processed_data_online.json
 	python src/visualization/make_fig6.py

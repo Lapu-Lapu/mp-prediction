@@ -15,7 +15,7 @@ for mp_type, d in df.groupby('mp_type'):
     with pm.Model() as logistic_model:
         a = pm.Normal('a', 0, 10)
         b = pm.Normal('b', 0, 10)
-        x = d['partial_mse'] - d['partial_mse'].mean()
+        x = d['partialMSE'] - d['partialMSE'].mean()
         x = x / x.max()
         p = 1 / (1 + np.exp(-(a + b * x)))
         s = pm.Bernoulli('s', p=p, observed=d['result'])
@@ -28,11 +28,11 @@ for i, (label, d) in enumerate(df.groupby('mp_type')):
         continue
 
     gb = d.groupby('model')
-    x = np.array(gb.partial_mse.mean())
+    x = np.array(gb.partialMSE.mean())
     x = np.array(gb.X.mean())
-    xmean = d['partial_mse'].mean()
-    xmax = (d['partial_mse'] - xmean).max()
-    xerr = np.array(gb.partial_mse.sem())
+    xmean = d['partialMSE'].mean()
+    xmax = (d['partialMSE'] - xmean).max()
+    xerr = np.array(gb.partialMSE.sem())
     xerr = np.array(gb.X.sem())
     y = np.array(gb.result.mean())
     yerr = np.array(gb.result.agg(beta_std))

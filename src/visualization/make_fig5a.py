@@ -5,31 +5,9 @@ import matplotlib.pyplot as plt
 import pickle
 
 from src.data.utils import trial_id, process_data_dict
-from src.data.utils import _parse_params, open_pkls
 from src.globs import beta_std
 
 df = pd.read_json('data/processed/processed_data_vr.json')
-
-participant_id = df.participant.unique()
-id_to_idx = dict(zip(participant_id, range(len(participant_id))))
-df['pid'] = df.participant.apply(lambda id: id_to_idx[id])
-
-D2 = open_pkls('data/raw/online/scores/combined_errors.pkl')
-D2 = process_data_dict(D2)
-D2 = D2.set_index('training_id')
-
-U = set(df.trial_id).intersection(D2.index)
-df = df[df['trial_id'].apply(lambda x: x in U)]
-
-for idx in df.index:
-    trial_id = df.loc[idx, 'trial_id']
-    val = D2.loc[trial_id, "continuation_T"] * 60 / D2.loc[trial_id,
-                                                           "continuation_MSE"]
-    df.loc[idx, 'invMSE'] = val
-    df.loc[idx, 'partialMSE'] = 1 / val
-
-df['X'] = (df.partialMSE - df.partialMSE.mean()) / (df.partialMSE.max() -
-                                                    df.partialMSE.mean())
 
 traces = {}
 for mp_type, d in df.groupby('mp_type'):
@@ -44,8 +22,6 @@ for mp_type, d in df.groupby('mp_type'):
         s = pm.Bernoulli('s', p=p, observed=d['result'])
         trace = pm.sample(1000, tune=1000, init='adapt_diag')
     traces[mp_type] = trace
-
-df['model'] = df.apply(_parse_params, axis=1)
 
 group = 'test_part'
 fig, ax = plt.subplots()
