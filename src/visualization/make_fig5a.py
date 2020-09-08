@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import pickle
 
 from src.data.utils import trial_id, process_data_dict
-from src.globs import beta_std
+from src.models.utils import beta_std
 
 df = pd.read_json('data/processed/processed_data_vr.json')
 

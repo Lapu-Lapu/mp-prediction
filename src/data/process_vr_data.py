@@ -2,12 +2,13 @@ from src.data.utils import (open_pkls,
                             load_post_processed_data, get_mptype,
                             process_data_dict, get_params, trial_id,
                             parse_filename, _parse_params)
-from src.globs import beta_std
+from src.models.utils import beta_std
 
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from functools import partial
+import json
 
 
 def add_model_scores(S, id_str: str, row: pd.Series) -> pd.Series:
@@ -15,7 +16,19 @@ def add_model_scores(S, id_str: str, row: pd.Series) -> pd.Series:
     scores = S.loc[row[id_str]]
     return pd.concat((row, scores))
 
-# import data_processing as io
+
+class CAF:
+    def __init__(self, fn='data/raw/vr/caf/avatar.cfg'):
+        with open(fn) as f:
+            self.cfg_full = f.readlines()
+        self.cfg = [c for c in self.cfg_full if c[0] == 'a']
+
+    def return_caf(self, idx):
+        return self.cfg[idx - 1].replace('-', '')
+
+    def return_hold(self, row):
+        ser = parse_filename(self.return_caf(row['stimulus_id']))
+        return ser
 
 # ## Prepare training results data
 
@@ -37,20 +50,6 @@ modelscores = gb.agg({
 # ## Prepare experiment data
 
 df = load_post_processed_data('data/raw/vr/')
-
-
-class CAF:
-    def __init__(self, fn='data/raw/vr/caf/avatar.cfg'):
-        with open(fn) as f:
-            self.cfg_full = f.readlines()
-        self.cfg = [c for c in self.cfg_full if c[0] == 'a']
-
-    def return_caf(self, idx):
-        return self.cfg[idx - 1].replace('-', '')
-
-    def return_hold(self, row):
-        ser = parse_filename(self.return_caf(row['stimulus_id']))
-        return ser
 
 
 caf = CAF()
@@ -115,6 +114,23 @@ id_to_idx = dict(zip(participant_id, range(len(participant_id))))
 df['pid'] = df.participant.apply(lambda id: id_to_idx[id])
 
 D2 = open_pkls('data/raw/online/scores/combined_errors.pkl')
+
+def overwrite_continuation_T(errors):
+    ds = errors['settings']['dataset']
+    hold = errors['settings']['hold']
+    start, end = contact_timings[ds]['inter'][hold]
+    continuation_err = errors['observed'][end:]
+    mse = np.sum((continuation_err - errors['predicted'][end:])**2)
+    errors['continuation_MSE'] = mse / len(continuation_err)
+    del errors['observed']
+    del errors['predicted']
+    return errors
+
+
+with open('data/raw/online/contact_info/segments.json') as fo:
+    contact_timings = json.load(fo)
+
+D2 = map(overwrite_continuation_T, D2)
 D2 = process_data_dict(D2)
 D2 = D2.set_index('training_id')
 
@@ -123,8 +139,9 @@ df = df[df['trial_id'].apply(lambda x: x in U)]
 
 for idx in df.index:
     trial_id = df.loc[idx, 'trial_id']
-    val = D2.loc[trial_id, "continuation_T"] * 60 / D2.loc[trial_id,
-                                                           "continuation_MSE"]
+    # val = D2.loc[trial_id, "continuation_T"] / D2.loc[trial_id,
+    #                                                        "continuation_MSE"]
+    val = 1 / D2.loc[trial_id, "continuation_MSE"]
     df.loc[idx, 'invMSE'] = val
     df.loc[idx, 'partialMSE'] = 1 / val
 
@@ -132,6 +149,5 @@ df['X'] = (df.partialMSE - df.partialMSE.mean()) / (df.partialMSE.max() -
                                                     df.partialMSE.mean())
 
 df['model'] = df.apply(_parse_params, axis=1)
-
 
 df.to_json('data/processed/processed_data_vr.json')

@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from src.globs import beta_std, model
+from src.models.utils import beta_std, model
 
 
 def _parse_params(row: pd.Series) -> (str, str):

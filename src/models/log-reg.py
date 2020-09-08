@@ -19,9 +19,10 @@ for mp_type, d in df.groupby('mp_type'):
     with pm.Model() as logistic_model:
         a = pm.Normal('a', 0, 10)
         b = pm.Normal('b', 0, 10)
-        x = d['partialMSE'] - d['partialMSE'].mean()
-        x = x / x.max()
-        p = 1 / (1 + np.exp(-(a + b * x)))
+        # x = d['partialMSE'] - d['partialMSE'].mean()
+        # x = x / x.max()
+        x = d['partialMSE']
+        p = 0.5 / (1 + np.exp(-(a + b * x)))
         s = pm.Bernoulli('s', p=p, observed=d['result'])
         trace = pm.sample(1000, tune=1000, init='adapt_diag')
     traces[mp_type] = trace

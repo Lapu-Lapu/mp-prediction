@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from src.globs import beta_std
+from src.models.utils import beta_std
 
 # df = pd.read_csv('data/raw/vr/catchtrials/catchtrials.csv')
 df = pd.read_csv('data/processed/catchtrial_vr.csv')

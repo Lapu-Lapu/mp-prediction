@@ -36,9 +36,3 @@ pp = {
     'map_cgpdm': 'cGPDM (MAP)',
     'map_gpdm': 'GPDM (MAP)'
 }
-
-
-def beta_std(s):
-    p = s.sum() + 1
-    q = len(s) - s.sum() + 1
-    return np.sqrt(p * q / (p + q + 1) / (p + q)**2)

@@ -16,7 +16,8 @@ vrdata: data/processed/processed_data_vr.json
 
 onlinedata: data/processed/processed_data_online.json
 
-data/processed/logreg_traces.pkl:
+data/processed/logreg_traces.pkl: src/models/log-reg.py\
+	data/processed/processed_data.json
 	python src/models/log-reg.py
 
 data/processed/processed_data_vr.json data/processed/catrchtrial_vr.csv: src/data/process_vr_data.py
@@ -24,6 +25,10 @@ data/processed/processed_data_vr.json data/processed/catrchtrial_vr.csv: src/dat
 
 data/processed/catchtrial_online.json data/processed/processed_data_online.json:
 	python src/data/process_online_data.py
+
+data/processed/processed_data.json: data/processed/processed_data_online.json\
+	data/processed/processed_data_vr.json
+	python src/data/join_data.py
 
 fig3: reports/figures/fig3.pdf
 
@@ -35,12 +40,15 @@ fig6: reports/figures/fig6.pdf
 
 talk_main_fig: reports/figure/talk_main_fig.pdf
 
-reports/figure/talk_main_fig.pdf: data/processed/processed_data_online.json\
-	data/processed/processed_data_vr.json\
+plot_histogram: data/processed/processed_data.json
+	ipython -i src/visualization/plot_mse_histogram.py
+
+reports/figure/talk_main_fig.pdf: data/processed/processed_data.json\
 	data/processed/logreg_traces.pkl
 	python src/visualization/make_talk_results_figure.py
 
-reports/figures/fig6.pdf: data/processed/processed_data_online.json
+reports/figures/fig6.pdf: data/processed/processed_data_online.json\
+	src/visualization/make_fig6.py
 	python src/visualization/make_fig6.py
 
 reports/figures/fig5a.pdf: data/processed/processed_data_vr.json

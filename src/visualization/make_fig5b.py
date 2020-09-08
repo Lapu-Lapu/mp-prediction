@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from functools import partial
 from itertools import product
 import pymc3 as pm
-from src.globs import beta_std
+from src.models.utils import beta_std
 
 df = pd.read_json('data/processed/processed_data_online.json')
 
