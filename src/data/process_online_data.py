@@ -236,6 +236,8 @@ if __name__ == '__main__':
     catchtrials = catchtrials[catchtrials.subject.apply(
         lambda vp: not (vp in bad_vps))]
 
+    df['participant'] = df['sona']
+
     print('write json files...')
     df_withattention.to_json(
         'data/processed/processed_online_with_attentioncheck.json')

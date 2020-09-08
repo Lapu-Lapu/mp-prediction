@@ -5,7 +5,6 @@ print('vr data:', df_vr.shape)
 
 df_online = pd.read_json('data/processed/processed_data_online.json')
 print('online data:', df_online.shape)
-df_online['participant'] = df_online['sona']
 
 df = pd.concat([df_vr, df_online], join='inner', ignore_index=True)
 print('data:', df.shape)
