@@ -12,14 +12,21 @@ with pm.Model() as varyingslopes:
     sd_dist = pm.HalfCauchy.dist(beta=2)
     packed_chol = pm.LKJCholeskyCov('chol_cov', eta=2, n=2, sd_dist=sd_dist)
     chol = pm.expand_packed_triangular(2, packed_chol, lower=True)
+
+    sd_dist2 = pm.HalfCauchy.dist(beta=2)
+    packed_chol2 = pm.LKJCholeskyCov('chol_cov2', eta=2, n=2, sd_dist=sd_dist2)
+    chol2 = pm.expand_packed_triangular(2, packed_chol2, lower=True)
+
     cov = pm.math.dot(chol, chol.T)
     sigma_ab = pm.Deterministic('sigma_ab', tt.sqrt(tt.diag(cov)))
     corr = tt.diag(sigma_ab**-1).dot(cov.dot(tt.diag(sigma_ab**-1)))
     r = pm.Deterministic('Rho', corr[np.triu_indices(2, k=1)])
-    ab_bar = pm.Normal('ab_bar', mu=0, sd=10, shape=2)
-    ab = pm.MvNormal('ab', mu=ab_bar, chol=chol, shape=(len(pmps), 2))
+    ab_barbar = pm.Normal('ab_barbar', mu=0, sd=10, shape=2)
+    ab_bar = pm.MvNormal('ab_bar', mu=ab_barbar, chol=chol, shape=(len(mp_types), 2))
+    ab_std = pm.Normal('ab_std', 0, 1, shape=(2, len(participants)))
+    ab = ab_bar[df.id_mptype] + tt.sum(chol2 * ab_std[:, df.id_participant])
     x = df['partialMSE']
-    p = 0.5 / (1 + np.exp(-(ab[df.id_pmp, 0] + (ab[df.id_pmp, 1]) * x)))
+    p = 0.5 / (1 + np.exp(-(ab[0] + ab[1] * x)))
     s = pm.Bernoulli('s', p=p, observed=df['result'])
     trace_cov2 = pm.sample(1000, tune=1000, init='adapt_diag')
 
