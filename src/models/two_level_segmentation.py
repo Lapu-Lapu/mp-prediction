@@ -27,8 +27,8 @@ with pm.Model() as multilevel:
     # x = x / x.max()
     x = df['partialMSE']
     c = pm.Beta('c', 2, 2, shape=(len(mp_types), 2))
-    p = c[df.id_mptype, df.occ] / (1 + np.exp(-(a_bar[df.id_mptype, df.occ] + sigma_a[df.id_mptype, df.occ] * a[df.id_participant, df.occ] + (b_bar[df.id_mptype, df.occ] + sigma_b[df.id_mptype, df.occ] * b[df.id_participant, df.occ]) * x)))
-    # p = 0.5 / (1 + np.exp(-(a_bar + sigma_a* a[df.id_participant] + sigma_c*c[df.id_mptype] + (b_bar + sigma_b * b[df.id_mptype]) * x)))
+    p = c[df.id_mp_type, df.occ] / (1 + np.exp(-(a_bar[df.id_mp_type, df.occ] + sigma_a[df.id_mp_type, df.occ] * a[df.id_participant, df.occ] + (b_bar[df.id_mp_type, df.occ] + sigma_b[df.id_mp_type, df.occ] * b[df.id_participant, df.occ]) * x)))
+    # p = 0.5 / (1 + np.exp(-(a_bar + sigma_a* a[df.id_participant] + sigma_c*c[df.id_mp_type] + (b_bar + sigma_b * b[df.id_mp_type]) * x)))
     s = pm.Bernoulli('s', p=p, observed=df['result'])
     trace_multilevel = pm.sample(1000, tune=1000, init='adapt_diag')
 

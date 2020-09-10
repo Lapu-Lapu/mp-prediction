@@ -25,7 +25,7 @@ def add_index(df, key):
 
 
 def load_data(fn='data/processed/processed_data.json'):
-    df = pd.read_json('data/processed/processed_data_online.json')
+    df = pd.read_json(fn)
 
     df['participant'] = df.participant.apply(str)
     df['pmp'] = df.apply(lambda row: ';'.join([row.participant, row.mp_type]), axis=1)

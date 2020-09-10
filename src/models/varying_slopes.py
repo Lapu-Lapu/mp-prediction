@@ -24,7 +24,7 @@ with pm.Model() as varyingslopes:
     ab_barbar = pm.Normal('ab_barbar', mu=0, sd=10, shape=2)
     ab_bar = pm.MvNormal('ab_bar', mu=ab_barbar, chol=chol, shape=(len(mp_types), 2))
     ab_std = pm.Normal('ab_std', 0, 1, shape=(2, len(participants)))
-    ab = ab_bar[df.id_mptype] + tt.sum(chol2 * ab_std[:, df.id_participant])
+    ab = ab_bar[df.id_mp_type] + tt.sum(chol2 * ab_std[:, df.id_participant])
     x = df['partialMSE']
     p = 0.5 / (1 + np.exp(-(ab[0] + ab[1] * x)))
     s = pm.Bernoulli('s', p=p, observed=df['result'])

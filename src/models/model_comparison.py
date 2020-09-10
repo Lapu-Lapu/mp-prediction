@@ -20,7 +20,7 @@ with pm.Model() as multilevel:
     # x = x / x.max()
     x = df['partialMSE']
     p = 0.5 / (1 + np.exp(-(a_bar + sigma_a * a[df.id_pmp] + (b_bar + sigma_b * b[df.id_pmp]) * x)))
-    # p = 0.5 / (1 + np.exp(-(a_bar + sigma_a* a[df.id_participant] + sigma_c*c[df.id_mptype] + (b_bar + sigma_b * b[df.id_mptype]) * x)))
+    # p = 0.5 / (1 + np.exp(-(a_bar + sigma_a* a[df.id_participant] + sigma_c*c[df.id_mp_type] + (b_bar + sigma_b * b[df.id_mp_type]) * x)))
     s = pm.Bernoulli('s', p=p, observed=df['result'])
     trace_multilevel = pm.sample(1000, tune=1000, init='adapt_diag')
 
@@ -52,7 +52,7 @@ with pm.Model() as mult_mixed:
     # x = d['partialMSE'] - d['partialMSE'].mean()
     # x = x / x.max()
     x = df['partialMSE']
-    p = 0.5 / (1 + np.exp(-(a_bar + sigma_a * a[df.id_participant] + sigma_c * c[df.id_mptype] + b[df.id_mptype] * x)))
-    # p = 0.5 / (1 + np.exp(-(a_bar + sigma_a* a[df.id_participant] + sigma_c*c[df.id_mptype] + (b_bar + sigma_b * b[df.id_mptype]) * x)))
+    p = 0.5 / (1 + np.exp(-(a_bar + sigma_a * a[df.id_participant] + sigma_c * c[df.id_mp_type] + b[df.id_mp_type] * x)))
+    # p = 0.5 / (1 + np.exp(-(a_bar + sigma_a* a[df.id_participant] + sigma_c*c[df.id_mp_type] + (b_bar + sigma_b * b[df.id_mp_type]) * x)))
     s = pm.Bernoulli('s', p=p, observed=df['result'])
     trace_multimixed = pm.sample(1000, tune=1000, init='adapt_diag')

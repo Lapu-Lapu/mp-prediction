@@ -20,7 +20,7 @@ mp_types = df.mp_type.unique()
 participant_to_idx = key_to_idx(participants)
 mp_type_to_idx = key_to_idx(mp_types)
 
-df['id_mptype'] = df.mp_type.apply(lambda x: mp_type_to_idx[x])
+df['id_mp_type'] = df.mp_type.apply(lambda x: mp_type_to_idx[x])
 
 # xpred = np.linspace(-10, 10)
 # for mp_type, participant in product(mp_types, ['19_w_19', 7465, 7432]):
