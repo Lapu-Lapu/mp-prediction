@@ -1,11 +1,10 @@
 from src.models.utils import load_data
-import pandas as pd
 import numpy as np
 import pickle
 import pymc3 as pm
 
 
-df, pmps, participants, mp_types, participant_to_idx, mp_type_to_idx, pmp_to_idx = load_data('data/processed/processed_online_data.json')
+df, pmps, participants, mp_types, participant_to_idx, mp_type_to_idx, pmp_to_idx = load_data('data/processed/processed_data_online.json')
 
 df['occ'] = df['occluded_contact'].astype(int)
 
