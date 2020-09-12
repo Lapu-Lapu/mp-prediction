@@ -13,7 +13,7 @@ df, pmps, participants, mp_types, participant_to_idx, mp_type_to_idx, pmp_to_idx
 mp_to_indices = {mp: [idx for s, idx in pmp_to_idx.items() if s.split(';')[1] == mp] for mp in mp_types}
 
 with open("data/processed/twolevel_trace.pkl", "rb") as fh:
-    model, trace = pickle.load(fh)
+    model, trace, mp_type_to_idx = pickle.load(fh)
 
 fig, ax = plt.subplots()
 for label, d in df.groupby('mp_type'):
@@ -51,5 +51,5 @@ plt.xlim(-0.01, 1.95)
 plt.title(f'MP-Model Confusion')
 plt.ylabel('Confusion Rate')
 plt.xlabel('MSE')
-plt.savefig('../SFBTRR135experiments/natMPs/talks/SAP2020_presentation/media/multilevel.svg')
+# plt.savefig('../SFBTRR135experiments/natMPs/talks/SAP2020_presentation/media/multilevel.svg')
 plt.show()
