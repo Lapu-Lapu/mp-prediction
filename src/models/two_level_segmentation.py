@@ -7,7 +7,9 @@ import pymc3 as pm
 df, pmps, participants, mp_types, participant_to_idx, mp_type_to_idx, pmp_to_idx = load_data('data/processed/processed_data_online.json')
 
 df['occ'] = df['occluded_contact'].astype(int)
-
+print(df.shape)
+df = df[df.movement.apply(lambda m: m in ['pass-bottle', 'return-bottle'])]
+print(df.shape)
 with pm.Model() as multilevel:
     a_barbar = pm.Normal('a_barbar', 0, 1.5)
     sigma_abar = pm.Exponential('sigma_abar', 1)
@@ -31,7 +33,7 @@ with pm.Model() as multilevel:
     s = pm.Bernoulli('s', p=p, observed=df['result'])
     trace_multilevel = pm.sample(1000, tune=1000, init='adapt_diag')
 
-with open("data/processed/twolevelsegmentation_trace.pkl", "wb") as fh:
+with open("data/processed/twolevelsegmentation_trace2.pkl", "wb") as fh:
     pickle.dump((multilevel, trace_multilevel), fh)
 
 trace_multilevel['b_bar'].mean(axis=0)
