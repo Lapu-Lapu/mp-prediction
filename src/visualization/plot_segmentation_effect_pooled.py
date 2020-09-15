@@ -22,17 +22,19 @@ a_bar = trace['a_bar']
 import seaborn as sns
 import pandas as pd
 from itertools import product
+sns.set_theme()
 
 X = 1/(1+np.exp(-a_bar[:]))
 D = [pd.DataFrame({
-        'y': X[:, occ],
-        'mp': 'all',
-        'occ': 'Yes' if occ==1 else 'No'
+        'Confusion Rate': X[:, occ],
+        'MPs': 'all',
+        'Contact Occluded': 'Yes' if occ==1 else 'No'
     }) for occ in [0, 1]]
 df = pd.concat(D)
-sns.violinplot(data=df, y="y", x='mp', hue="occ",
+sns.violinplot(data=df, y="Confusion Rate", x='MPs', hue="Contact Occluded",
                split=True, inner="quart", linewidth=1,
                # )
                palette={"Yes": "b", "No": ".85"})
 sns.despine(left=True)
+plt.savefig('../SFBTRR135experiments/natMPs/talks/SAP2020_presentation/media/contact_occlusion.pdf', transparent=True)
 plt.show()
