@@ -198,7 +198,7 @@ if __name__ == '__main__':
     df['occluded_contact'] = df.apply(
         lambda row:
         (row.occ_cond == 'inter'
-         if row.movement in ['pass-botte', 'return-bottle'] else False),
+         if row.movement in ['pass-bottle', 'return-bottle'] else False),
         axis=1)
 
     # split catchtrials into separate dataframe
