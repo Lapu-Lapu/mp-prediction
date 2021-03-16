@@ -15,29 +15,6 @@ def add_model_scores(S, id_str: str, row: pd.Series) -> pd.Series:
     scores = S.loc[row[id_str]]
     return pd.concat((row, scores))
 
-# import data_processing as io
-
-# ## Prepare training results data
-
-D = [
-    d for fn in [
-        'data/raw/vr/scores/combined_model_errors.pkl',
-        "data/raw/vr/scores/combined_errors_1.pkl",
-        "data/raw/vr/scores/combined_errors_2.pkl"
-    ] for d in open_pkls(fn)
-]
-training_data = process_data_dict(D)
-
-gb = training_data.groupby('training_id')
-modelscores = gb.agg({
-    score: lambda x: x.mean()
-    for score in ["MSE", "ELBO", 'dyn_elbo', 'lvm_elbo']
-})
-
-# ## Prepare experiment data
-
-df = load_post_processed_data('data/raw/vr/')
-
 
 class CAF:
     def __init__(self, fn='data/raw/vr/caf/avatar.cfg'):
@@ -51,28 +28,6 @@ class CAF:
     def return_hold(self, row):
         ser = parse_filename(self.return_caf(row['stimulus_id']))
         return ser
-
-
-caf = CAF()
-caf_info = df.apply(caf.return_hold, axis=1)
-
-PP = {
-    "returnbottle": "return-bottle",
-    "passbottlehold": "pass-bottle-hold",
-    "passbottle": "pass-bottle"
-}
-
-caf_info['movement'] = caf_info.dataset.apply(lambda x: PP[x])
-caf_info['mp_type'] = caf_info.apply(get_mptype, axis=1)
-caf_info['trial_id'] = caf_info.apply(trial_id, axis=1)
-
-for key in [
-        'dataset', 'dyn', 'hold', 'lvm', 'npsi', 'numprim', 'movement',
-        'mp_type', 'trial_id'
-]:
-    df[key] = caf_info[key]
-
-df = df.apply(partial(add_model_scores, modelscores, 'trial_id'), axis=1)
 
 
 def append_confusion_stats(df: pd.DataFrame,
@@ -89,24 +44,58 @@ def append_confusion_stats(df: pd.DataFrame,
     return df.apply(partial(add_model_scores, confusion_rates, id_str), axis=1)
 
 
-df = append_confusion_stats(df, 'trial_id')
-
-
 def build_modelstr(x: pd.Series) -> str:
     return "_".join(x.trial_id.split('_')[:2])
 
 
-df['modelstr'] = df.apply(build_modelstr, axis=1)
+if __name__ == '__main__':
+    # ## Prepare training results data
+    D = [
+        d for fn in [
+            'data/raw/vr/scores/combined_model_errors.pkl',
+            "data/raw/vr/scores/combined_errors_1.pkl",
+            "data/raw/vr/scores/combined_errors_2.pkl"
+        ] for d in open_pkls(fn)
+    ]
+    training_data = process_data_dict(D)
 
-df = append_confusion_stats(df, 'modelstr')
+    gb = training_data.groupby('training_id')
+    modelscores = gb.agg({
+        score: lambda x: x.mean()
+        for score in ["MSE", "ELBO", 'dyn_elbo', 'lvm_elbo']
+    })
 
-# ## Write processed data
+    # get experiment data
+    df = load_post_processed_data('data/raw/vr/')
+    caf = CAF()
+    caf_info = df.apply(caf.return_hold, axis=1)
 
-df = df.drop([
-    'block', 'stimulus_id', 'correct_sequence', 'part_input', 'first_seq',
-    'second_seq', 'first_seq_from', 'date', 'expName', 'second_seq_from',
-    'trialnumber'
-],
-             axis=1)
+    PP = {
+        "returnbottle": "return-bottle",
+        "passbottlehold": "pass-bottle-hold",
+        "passbottle": "pass-bottle"
+    }
 
-df.to_json('data/processed/processed_data_vr.json')
+    caf_info['movement'] = caf_info.dataset.apply(lambda x: PP[x])
+    caf_info['mp_type'] = caf_info.apply(get_mptype, axis=1)
+    caf_info['trial_id'] = caf_info.apply(trial_id, axis=1)
+
+    for key in ['dataset', 'dyn', 'hold', 'lvm', 'npsi', 'numprim', 'movement',
+                'mp_type', 'trial_id']:
+        df[key] = caf_info[key]
+
+    df = df.apply(partial(add_model_scores, modelscores, 'trial_id'), axis=1)
+    df = append_confusion_stats(df, 'trial_id')
+
+    df['modelstr'] = df.apply(build_modelstr, axis=1)
+    df = append_confusion_stats(df, 'modelstr')
+
+    # ## Write processed data
+    df = df.drop([
+        'block', 'stimulus_id', 'correct_sequence', 'part_input', 'first_seq',
+        'second_seq', 'first_seq_from', 'date', 'expName', 'second_seq_from',
+        'trialnumber'
+    ],
+                 axis=1)
+
+    df.to_json('data/processed/processed_data_vr.json')
