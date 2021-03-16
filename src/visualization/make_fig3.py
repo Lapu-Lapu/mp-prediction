@@ -22,6 +22,7 @@ def tested_in_both_experiments(s):
 
 df_old = pd.read_json('data/raw/previous/joint_results.json')
 df_new = pd.read_json('data/processed/processed_data_vr.json')
+#df_hieu = pd.read_pickle('/home/benjamin/temp/hieu/ba/modelsets')
 
 df_old['modelstr'] = df_old.apply(trial_id_desktop, axis=1)
 

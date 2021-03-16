@@ -16,6 +16,14 @@ vrdata: data/processed/processed_data_vr.json
 
 onlinedata: data/processed/processed_data_online.json
 
+hieudata: data/processed/processed_hieu.json
+# TODO: include hieus files in data/raw
+data/interim/hieu_merged.json: src/data/merge_hieu_data.py
+	python src/data/merge_hieu_data.py
+
+data/processed/processed_hieu.json: data/interim/hieu_merged.json src/data/process_hieu_data.py
+	python src/data/process_hieu_data.py
+
 data/processed/processed_data_vr.json data/processed/catrchtrial_vr.csv:
 	python src/data/process_vr_data.py
 
