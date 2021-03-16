@@ -5,6 +5,7 @@ import os
 from datetime import datetime
 import json
 import numpy as np
+from functools import partial
 
 from src.globs import model
 from src.data.utils import open_pkls, _parse_params, trial_id, parse_filename
@@ -77,7 +78,7 @@ def get_ds_hold_from_catch(fn):
     return ds, hold
 
 
-def add_partial_mse(row):
+def add_partial_mse(row, score_data):
     if 'catch_trial' in row.test_stimulus.keys():
         fn = row.test_stimulus['fn_train']
         ds, hold = get_ds_hold_from_catch(fn)
@@ -90,7 +91,7 @@ def add_partial_mse(row):
     row['hold'] = hold
     row['movement'] = ds
     try:
-        partial_mse = SCORES[fn][occ]
+        partial_mse = score_data[fn][occ]
     except KeyError:
         partial_mse = None
     row['partial_mse'] = partial_mse
@@ -106,7 +107,7 @@ def is_correct_response(row):
         raise Exception
 
 
-def preprocess(Df):
+def preprocess(Df, score_data):
     df = Df[Df.test_part == 'response']
 
     def get_fn(row):
@@ -121,11 +122,11 @@ def preprocess(Df):
                                   axis=1)
     df.loc[:, 'vp_correct'] = df.apply(is_correct_response, axis=1)
     df.loc[:, 'result'] = 1 - df.loc[:, 'vp_correct']
-    df = df.apply(add_partial_mse, axis=1)
+    df = df.apply(partial(add_partial_mse, score_data=score_data), axis=1)
     return df
 
 
-def load_data(json_fps):
+def load_data(json_fps, score_data):
     Dfs = []
     for fp in json_fps:
         df_fn = 'data/interim/' + fp.split('/')[-1]
@@ -138,7 +139,7 @@ def load_data(json_fps):
             Df = pd.DataFrame(d)
             date = datetime.utcfromtimestamp(os.path.getmtime(fp))
             try:
-                Df = preprocess(Df)
+                Df = preprocess(Df, score_data)
                 try:
                     t, c = Df.shape
                 except ValueError:
@@ -167,22 +168,26 @@ def add_param_columns(row):
     return row
 
 
+def load_scores(fn='data/raw/online/scores/combined_errors.pkl'):
+    scores = open_pkls(fn)
+    s = map(compute_partial_mse, scores)
+    return {elem['id']: elem for elem in s}
+
+
 if __name__ == '__main__':
     with open('data/raw/online/contact_info/segments.json') as fo:
         contact_timings = json.load(fo)
 
     # load scores into global scope for load_data to be able to add model scores
-    scores = open_pkls('data/raw/online/scores/combined_errors.pkl')
-    s = map(compute_partial_mse, scores)
-    SCORES = {elem['id']: elem for elem in s}
+    score_data = load_scores()
 
     # load and process all json files
     json_fps = glob('data/raw/online/*.json')
-    Dfs = load_data(json_fps)
+    Dfs = load_data(json_fps, score_data)
     for df in Dfs:
         try:
             print(df.iloc[0]['sona'], df.shape, df.result.mean())
-            s += len(df)
+            # s += len(df)
         except (KeyError, TypeError):
             pass
     df = pd.concat(
